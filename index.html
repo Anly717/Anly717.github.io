@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>大肥羊校园闲置物品交换平台</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div class="container" id="top">
+    <header class="topbar">
+      <div class="brand" aria-label="项目名称">
+        <div class="brand__row">
+          <img class="logo" src="./logo.jpg" alt="大肥羊 Logo" />
+          <div class="brand__text">
+            <div class="brand__title">大肥羊 · 校园闲置交换</div>
+            <div class="brand__sub">仅本校范围 · 交换/免费/低价转卖</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="search" aria-label="搜索">
+        <div class="input" role="search">
+          <span aria-hidden="true">🔎</span>
+          <input id="q" type="search" placeholder="搜索：教材 / 耳机 / 小电锅…" autocomplete="off" />
+        </div>
+        <button class="btn btn--primary" id="btnSearch" type="button">搜索</button>
+      </div>
+
+      <button class="btn btn--ghost" id="btnReset" type="button" title="清空搜索与筛选">重置</button>
+    </header>
+
+    <section class="hero" aria-label="首页第一屏">
+      <div class="panel" aria-label="轮播推荐">
+        <div class="panel__hd">
+          <div>
+            <div class="panel__title">推荐</div>
+            <div class="panel__hint">热门闲置 / 最新发布</div>
+          </div>
+          <div class="carousel__actions" aria-label="轮播操作">
+            <button class="btn" id="btnPrev" type="button">上一条</button>
+            <button class="btn" id="btnNext" type="button">下一条</button>
+          </div>
+        </div>
+        <div class="panel__bd">
+          <div class="carousel" id="carousel">
+            <div class="carousel__tag" id="carouselTag">热门闲置</div>
+            <div class="carousel__title" id="carouselTitle">加载中…</div>
+            <div class="carousel__desc" id="carouselDesc">请稍候</div>
+            <div class="carousel__actions">
+              <button class="btn btn--primary" id="btnGoHot" type="button">去看热门推荐</button>
+              <button class="btn" id="btnGoLatest" type="button">去看最新发布</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" aria-label="分类导航与发布入口">
+        <div class="panel__hd">
+          <div>
+            <div class="panel__title">分类导航</div>
+            <div class="panel__hint">书籍 / 数码 / 生活用品 / 美妆</div>
+          </div>
+          <button class="btn btn--primary" id="btnGoPublish" type="button">发布闲置</button>
+        </div>
+        <div class="panel__bd">
+          <div class="categories" role="group" aria-label="分类选择">
+            <button class="chip" data-cat="全部" aria-pressed="true" type="button">全部</button>
+            <button class="chip" data-cat="书籍" aria-pressed="false" type="button">书籍</button>
+            <button class="chip" data-cat="数码" aria-pressed="false" type="button">数码</button>
+            <button class="chip" data-cat="生活用品" aria-pressed="false" type="button">生活用品</button>
+            <button class="chip" data-cat="美妆" aria-pressed="false" type="button">美妆</button>
+          </div>
+
+          <div style="margin-top: 12px; color: var(--muted); font-size: 12px; line-height: 1.6;">
+            提示：平台仅提供信息展示与联系渠道。
+            <span class="notice">不做支付、不做跨校、不做物流</span>。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid" aria-label="列表区">
+      <div class="section" id="latest">
+        <div class="panel">
+          <div class="panel__hd">
+            <div>
+              <div class="panel__title">最新发布</div>
+              <div class="panel__hint" id="latestHint">按发布时间倒序</div>
+            </div>
+          </div>
+          <div class="panel__bd">
+            <div class="cards" id="latestList" aria-label="最新发布列表"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="hot">
+        <div class="panel">
+          <div class="panel__hd">
+            <div>
+              <div class="panel__title">热门推荐</div>
+              <div class="panel__hint" id="hotHint">演示版：先用模拟热度</div>
+            </div>
+          </div>
+          <div class="panel__bd">
+            <div class="cards" id="hotList" aria-label="热门推荐列表"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="detail" id="detail" aria-hidden="true" aria-label="物品详情">
+      <div class="panel">
+        <div class="panel__hd">
+          <div>
+            <div class="panel__title">物品详情</div>
+            <div class="panel__hint" id="detailHint">点击任意物品卡片查看</div>
+          </div>
+          <button class="btn" id="btnCloseDetail" type="button">收起</button>
+        </div>
+        <div class="panel__bd">
+          <div class="detail__grid" id="detailGrid"></div>
+          <div class="contact" id="contact" style="margin-top: 12px; display: none;" aria-label="联系卖家">
+            <div class="contact__line">
+              <div>
+                <div style="font-weight: 900;">联系卖家</div>
+                <div style="color: var(--muted); font-size: 12px; margin-top: 2px;">建议在校内公共区域当面交易，注意防诈骗。</div>
+              </div>
+              <button class="btn btn--primary" id="btnCopyContact" type="button">复制联系方式</button>
+            </div>
+            <div class="contact__value" id="contactValue">—</div>
+          </div>
+
+          <div class="message" id="message" hidden aria-label="留言区">
+            <div class="message__hd">
+              <div class="message__title">留言板</div>
+              <div class="message__hint" id="messageHint">选择物品后可留言</div>
+            </div>
+            <div class="message__list" id="messageList" aria-label="留言列表"></div>
+            <form class="message__form" id="messageForm" aria-label="发布留言">
+              <label>
+                留言内容
+                <textarea id="messageInput" placeholder="例如：还在吗？可以今天晚上在图书馆门口自提吗？" required></textarea>
+              </label>
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btn--primary" type="submit">发布留言</button>
+              </div>
+            </form>
+          </div>
+
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px;">
+            <button class="btn btn--primary" id="btnShowContact" type="button">联系卖家</button>
+            <button class="btn" id="btnBackTop" type="button">回到顶部</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="my" aria-label="用户管理：我的发布">
+      <div class="panel">
+        <div class="panel__hd">
+          <div>
+            <div class="panel__title">我的发布</div>
+            <div class="panel__hint">当前用户：<b id="currentUserName">我（示例）</b>（演示版）</div>
+          </div>
+        </div>
+        <div class="panel__bd">
+          <div class="cards" id="myList" aria-label="我的发布列表"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="publish" aria-label="发布闲置">
+      <div class="panel">
+        <div class="panel__hd">
+          <div>
+            <div class="panel__title">发布闲置</div>
+            <div class="panel__hint">演示版：提交后会出现在“最新发布”顶部</div>
+          </div>
+        </div>
+        <div class="panel__bd">
+          <div class="publish">
+            <form class="form" id="publishForm">
+              <div class="form__row">
+                <label>
+                  分类
+                  <select id="fCategory" required>
+                    <option value="书籍">书籍</option>
+                    <option value="数码">数码</option>
+                    <option value="生活用品">生活用品</option>
+                    <option value="美妆">美妆</option>
+                  </select>
+                </label>
+                <label>
+                  标题
+                  <div class="input"><input id="fTitle" placeholder="例如：高数教材（九成新）" required /></div>
+                </label>
+              </div>
+
+              <div class="form__row">
+                <label>
+                  价格（元，填 0 表示免费）
+                  <div class="input"><input id="fPrice" inputmode="numeric" placeholder="例如：20" required /></div>
+                </label>
+                <label>
+                  成色
+                  <div class="input"><input id="fCondition" placeholder="例如：九成新" required /></div>
+                </label>
+              </div>
+
+              <div class="form__row">
+                <label>
+                  校内自提地点
+                  <div class="input"><input id="fLocation" placeholder="例如：一食堂门口 / 图书馆" required /></div>
+                </label>
+                <label>
+                  联系方式（微信/QQ/手机号其一）
+                  <div class="input"><input id="fContact" placeholder="例如：wx: abc123" required /></div>
+                </label>
+              </div>
+
+              <label>
+                描述（可选）
+                <textarea id="fDesc" placeholder="补充说明：使用时长、是否包邮（本项目不做物流）、可交易时间等"></textarea>
+              </label>
+
+              <label>
+                图片（可选）
+                <input id="fImage" type="file" accept="image/*" />
+              </label>
+
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btn--primary" type="submit">提交发布</button>
+                <button class="btn" id="btnFillDemo" type="button">填充示例</button>
+              </div>
+            </form>
+
+            <div class="footer" aria-label="使用须知">
+              <div><b>使用须知（范围控制）</b></div>
+              <div>1) 仅本校范围：不提供跨校信息聚合。</div>
+              <div>2) 不做复杂支付：平台不接入支付/担保交易，请自行线下协商。</div>
+              <div>3) 不做物流对接：建议校内自提，当面验货。</div>
+              <div class="notice">安全提示：请在校内公共区域交易，谨防诈骗；涉及预付/押金请谨慎。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer" aria-label="页脚">
+      <div><b>大肥羊校园闲置物品交换平台</b> — Demo 首页（静态原型）</div>
+      <div>当前页面用于课堂展示与需求验证：搜索、分类、最新/热门、发布入口、联系卖家。</div>
+    </footer>
+  </div>
+
+  <div class="floating" aria-label="快捷操作">
+    <button class="btn btn--primary" id="btnFloatPublish" type="button">发布</button>
+    <button class="btn" id="btnFloatTop" type="button">顶部</button>
+  </div>
+</body>
+</html>
